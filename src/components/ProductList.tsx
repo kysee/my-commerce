@@ -100,7 +100,7 @@ export default function ProductList() {
             signature: randomHexString(65) as any
         };
         const json = JSON.stringify(req);
-        setQrValue(json);
+        setQrValue(`mywallet://qr=${json}`);
         setDialogOpen(true);
     }
 
