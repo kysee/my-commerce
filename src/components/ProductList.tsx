@@ -2,39 +2,13 @@
 
 import { Card, CardContent } from "./ui/card";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { PayementRequest } from "./PaymentRequest";
 import * as React from "react";
 import dynamic from "next/dynamic";
-
-// 상품 타입 정의
-interface Product {
-    id: number;
-    name: string;
-    description: string;
-    seller: string;
-    price: number;
-    image: string;
-}
-
-const imgs: string[] = [
-    "/food1.jpg",
-    "/food2.jpg",
-    "/food3.png",
-    "/7pants.jpg",
-    "/one.jpg"
-]
-
-// 더미 데이터
-const DUMMY_PRODUCTS: Product[] = Array.from({ length: 30 }).map((_, i) => ({
-    id: i + 1,
-    name: `상품 ${i + 1}`,
-    description: `이것은 상품 ${i + 1}의 간략한 설명입니다.`,
-    seller: `판매자 ${((i % 5) + 1)}`,
-    price: 10000 + i * 500,
-    image: imgs[i % imgs.length],
-}));
+import { randomHexString } from "@/lib/utils";
+import { DUMMY_PRODUCTS, Product } from "@/lib/product";
 
 const PRODUCTS_PER_ROW = 3;
 const MAX_ROWS = 3;
@@ -53,13 +27,13 @@ export default function ProductList() {
     );
     const totalPages = Math.ceil(filtered.length / PRODUCTS_PER_PAGE);
     const paged = filtered.slice((page - 1) * PRODUCTS_PER_PAGE, page * PRODUCTS_PER_PAGE);
-
-    function randomHexString(bytes: number) {
-        const arr = Array.from({ length: bytes }, () => Math.floor(Math.random() * 256));
-        return '0x' + arr.map(b => b.toString(16).padStart(2, '0')).join('');
-    }
+    const isMobile = useIsMobile();
 
     function handlePaymentRequest(product: Product) {
+        if (isMobile) {
+            window.location.href = "mywallet://some.url";
+            return;
+        }
         // 더미 데이터로 PaymentRequest 생성
         const chainId = "0xbea8d3";
         const req: PayementRequest = {
@@ -140,7 +114,9 @@ export default function ProductList() {
                                 <span className="text-[11px] text-gray-500 leading-none text-right ml-2 whitespace-nowrap">{product.seller}</span>
                             </div>
                             <div className="text-xs text-muted-foreground line-clamp-1 w-full leading-snug mb-0.5">{product.description}</div>
-                            <Button variant="outline" className="w-auto mt-1 mb-2 px-0.5 py-0.5 flex justify-end items-center gap-1 self-end !h-auto !min-h-0 !rounded bg-primary text-white" onClick={() => handlePaymentRequest(product)}>
+                            <Button variant="outline"
+                                className="w-auto mt-1 mb-2 px-0.5 py-0.5 flex justify-end items-center gap-1 self-end !h-auto !min-h-0 !rounded bg-primary text-white"
+                                onClick={() => handlePaymentRequest(product)}>
                                 <span className="font-semibold text-sm">{product.price.toLocaleString()}</span>
                                 <span className="align-middle text-[10px]">CKRW</span>
                             </Button>
@@ -175,4 +151,18 @@ export default function ProductList() {
             )}
         </div>
     );
-} 
+}
+
+export function useIsMobile(breakpoint = 768) {
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        // 브라우저 환경에서만 동작
+        const checkMobile = () => setIsMobile(window.innerWidth <= breakpoint);
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, [breakpoint]);
+
+    return isMobile;
+}
