@@ -4,10 +4,8 @@ import { Card, CardContent } from "./ui/card";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
-import { PayementRequest } from "./PaymentRequest";
 import * as React from "react";
-import dynamic from "next/dynamic";
-import { randomHexString } from "@/lib/utils";
+import { getServerIp } from "@/lib/utils";
 import { DUMMY_PRODUCTS, Product } from "@/lib/product";
 
 const PRODUCTS_PER_ROW = 3;
@@ -30,8 +28,9 @@ export default function ProductList() {
     const isMobile = useIsMobile();
 
     function handlePaymentRequest(product: Product) {
-        const getPayReq = encodeURIComponent(`http://localhost:3000/buy?prodid=${String(product.id)}`);
+        const getPayReq = encodeURIComponent(`http://10.0.0.70:3000/buy?prodid=${String(product.id)}`);
         const deepLink = `mywallet://payReqUrl?r=${getPayReq}`;
+        console.log('deepLink', deepLink);
         if (isMobile) {
             window.location.href = deepLink;
             return;
