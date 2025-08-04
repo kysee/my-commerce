@@ -30,52 +30,15 @@ export default function ProductList() {
     const isMobile = useIsMobile();
 
     function handlePaymentRequest(product: Product) {
+        const getPayReq = encodeURIComponent(`http://192.168.10.59:3000/buy?prodid=${String(product.id)}`);
+        const deepLink = `mywallet://r=${getPayReq}`;
         if (isMobile) {
-            window.location.href = "mywallet://some.url";
+            window.location.href = deepLink;
             return;
+        } else {
+            setQrValue(deepLink);
+            setDialogOpen(true);
         }
-        // 더미 데이터로 PaymentRequest 생성
-        const chainId = "0xbea8d3";
-        const req: PayementRequest = {
-            stores: [
-                {
-                    id: String(product.id),
-                    name: product.seller,
-                    account: {
-                        chainId,
-                        address: randomHexString(20) as any
-                    }
-                }
-            ],
-            items: [
-                {
-                    id: String(product.id),
-                    name: product.name,
-                    amount: 1,
-                    price: {
-                        unit: "CKRW",
-                        amount: product.price
-                    }
-                }
-            ],
-            payment: {
-                token: {
-                    chainId,
-                    address: randomHexString(20) as any
-                },
-                to: [
-                    {
-                        chainId,
-                        address: randomHexString(20) as any
-                    }
-                ],
-                amount: product.price
-            },
-            signature: randomHexString(65) as any
-        };
-        const json = JSON.stringify(req);
-        setQrValue(`mywallet://qr=${json}`);
-        setDialogOpen(true);
     }
 
     return (

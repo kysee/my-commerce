@@ -11,7 +11,7 @@ export type Token = {
 export type Store = {
     id: string;
     name: string;
-    account: Account;
+    account?: Account;
 };
 
 export type Item = {
@@ -26,8 +26,7 @@ export type Item = {
 
 export type PayInfo = {
     token: Token;
-    to: Account[];
-    amount: string | number;
+    to: (Account & { amount: string | number })[];
 }
 
 
