@@ -30,8 +30,8 @@ export default function ProductList() {
     const isMobile = useIsMobile();
 
     function handlePaymentRequest(product: Product) {
-        const getPayReq = encodeURIComponent(`http://192.168.10.59:3000/buy?prodid=${String(product.id)}`);
-        const deepLink = `mywallet://r=${getPayReq}`;
+        const getPayReq = encodeURIComponent(`http://localhost:3000/buy?prodid=${String(product.id)}`);
+        const deepLink = `mywallet://payReqUrl?r=${getPayReq}`;
         if (isMobile) {
             window.location.href = deepLink;
             return;
