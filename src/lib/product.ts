@@ -16,6 +16,7 @@ export interface ProductStore {
     getProductList(): Product[];
 }
 
+const productStore = new SampleProducts();
 export function getProductStore(): ProductStore {
-    return new SampleProducts();
+    return productStore;
 }

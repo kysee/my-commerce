@@ -14,11 +14,12 @@ const PRODUCTS_PER_PAGE = PRODUCTS_PER_ROW * MAX_ROWS;
 import QRCode from "react-qr-code";
 
 export default function ProductList() {
+    const prodStore = getProductStore();
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(1);
     const [dialogOpen, setDialogOpen] = React.useState(false);
+    const [selectedProdId, selectProdId] = React.useState("");
     const [qrValue, setQrValue] = React.useState("");
-    const prodStore = getProductStore();
 
     const filtered = prodStore.getProductList().filter((p) =>
         p.name.includes(search) || p.description.includes(search) || p.seller.includes(search)
@@ -28,7 +29,8 @@ export default function ProductList() {
     const isMobile = useIsMobile();
 
     function handlePaymentRequest(product: Product) {
-        const getPayReq = encodeURIComponent(`http://10.0.0.70:3000/buy?prodid=${String(product.id)}`);
+        selectProdId(product.id);
+        const getPayReq = encodeURIComponent(`http://localhost:3000/buy?prodid=${product.id}`);
         const deepLink = `mywallet://payReqUrl?r=${getPayReq}`;
         console.log('deepLink', deepLink);
         if (isMobile) {
@@ -110,6 +112,7 @@ export default function ProductList() {
                         <div className="flex flex-col items-center">
                             <QRCode value={qrValue} size={256} />
                         </div>
+                        <p>ProductID: {selectedProdId}</p>
                     </div>
                 </div>
             )}

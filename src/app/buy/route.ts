@@ -19,6 +19,8 @@ export async function GET(request: NextRequest) {
 
     // 쿼리 파라미터 추출
     const prodid = searchParams.get('prodid')!;
+    console.log('ur', request.url);
+    console.log('prodid', prodid);
     const product = getProductStore().getProduct(prodid)!;
     const req: PayementRequest = {
         stores: [

@@ -20,7 +20,9 @@ export class SampleProducts implements ProductStore {
         image: imgs[i % imgs.length],
     }));
 
-    constructor() { }
+    constructor() {
+        console.log("new SampleProducts");
+    }
 
     getProductList(): Product[] {
         return this.products ?? [];
