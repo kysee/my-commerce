@@ -1,5 +1,5 @@
-import { DUMMY_PRODUCTS } from "@/lib/sample-prod";
-// 상품 타입 정의
+import { SampleProducts } from "./sample-prod";
+
 export interface Product {
     id: string;
     name: string;
@@ -9,9 +9,13 @@ export interface Product {
     image: string;
 }
 
-export function getProductList(): Product[] {
-    return DUMMY_PRODUCTS;
+
+export interface ProductStore {
+    products: Product[];
+    getProduct(id: string): Product | undefined;
+    getProductList(): Product[];
 }
-export function getProduct(id: string): Product | undefined {
-    return DUMMY_PRODUCTS.find(p => p.id === id);
+
+export function getProductStore(): ProductStore {
+    return new SampleProducts();
 }

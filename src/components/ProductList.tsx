@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import * as React from "react";
-import { Product, getProductList } from "@/lib/product";
+import { Product, getProductStore } from "@/lib/product";
 
 const PRODUCTS_PER_ROW = 3;
 const MAX_ROWS = 3;
@@ -18,8 +18,9 @@ export default function ProductList() {
     const [page, setPage] = useState(1);
     const [dialogOpen, setDialogOpen] = React.useState(false);
     const [qrValue, setQrValue] = React.useState("");
+    const prodStore = getProductStore();
 
-    const filtered = getProductList().filter((p) =>
+    const filtered = prodStore.getProductList().filter((p) =>
         p.name.includes(search) || p.description.includes(search) || p.seller.includes(search)
     );
     const totalPages = Math.ceil(filtered.length / PRODUCTS_PER_PAGE);
@@ -51,9 +52,10 @@ export default function ProductList() {
                 />
             </div>
             {/* 상품 그리드 */}
-            <div className="grid w-full gap-8"
+            <div className="grid w-full gap-2"
                 style={{
-                    gridTemplateColumns: `repeat(${PRODUCTS_PER_ROW}, minmax(0, 1fr))`,
+                    gridTemplateColumns: `repeat(auto-fit, minmax(250px, 1fr))`,
+                    justifyContent: 'center',
                     gridAutoRows: "1fr",
                 }}
             >
