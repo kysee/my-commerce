@@ -1,12 +1,16 @@
 
 import { getProduct } from "@/lib/product";
-import { PayementRequest } from '@/components/PaymentRequest';
+import { PayementRequest } from '@/lib/paymentRequest';
 import { randomHexString } from '@/lib/utils';
 import { NextRequest, NextResponse } from 'next/server';
+import { randomUUID } from "crypto";
 
+
+const chainId = "0xDEAD83"; // devnet0
 const platformAccountAddr = "0x092AA1CB78F490A2E424C7B2E12A6D6C62F401E1";
 const storeAccountAddr = "0x89C12C4E4947AFEC2F27495F47DAC691A18CAEE4";
 const tokenContractAddr = "0x3aa757aa5749be7d3cb1c0d7c59e6ef70de4ff8b";
+const storeId = randomUUID();
 
 
 export async function GET(request: NextRequest) {
@@ -14,23 +18,18 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
 
     // 쿼리 파라미터 추출
-    const prodid = searchParams.get('prodid'); // "1234"
-    const product = getProduct(Number(prodid))!;
-    const chainId = "0xDEAD83";
+    const prodid = searchParams.get('prodid')!;
+    const product = getProduct(prodid)!;
     const req: PayementRequest = {
         stores: [
             {
-                id: String(product.id),
-                name: product.seller,
-                account: {
-                    chainId,
-                    address: storeAccountAddr
-                }
+                id: storeId,
+                name: product.seller
             }
         ],
         items: [
             {
-                id: String(product.id),
+                id: product.id,
                 name: product.name,
                 amount: 1,
                 price: {
@@ -58,7 +57,7 @@ export async function GET(request: NextRequest) {
             ],
 
         },
-        signature: randomHexString(65) as any
+        signature: randomHexString(65) as any // dummy signature
     };
     return NextResponse.json(req);
 }
