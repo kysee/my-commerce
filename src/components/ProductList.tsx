@@ -52,11 +52,12 @@ export default function ProductList() {
                 />
             </div>
             {/* 상품 그리드 */}
-            <div className="grid w-full gap-2"
+            <div className="grid w-full gap-4"
                 style={{
                     gridTemplateColumns: `repeat(auto-fit, minmax(250px, 1fr))`,
                     justifyContent: 'center',
                     gridAutoRows: "1fr",
+                    padding: '0 16px'
                 }}
             >
                 {paged.map(product => (
