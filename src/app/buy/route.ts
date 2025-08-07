@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
 
 
-const chainId = "0xDEAD83"; // devnet0
+const chainId = "0xDEA8D3"; // devnet0
 const platformAccountAddr = "0x092AA1CB78F490A2E424C7B2E12A6D6C62F401E1";
 const storeAccountAddr = "0x89C12C4E4947AFEC2F27495F47DAC691A18CAEE4";
 const tokenContractAddr = "0x3aa757aa5749be7d3cb1c0d7c59e6ef70de4ff8b";
@@ -49,12 +49,7 @@ export async function GET(request: NextRequest) {
                 {
                     chainId,
                     address: storeAccountAddr,
-                    amount: product.price * 9 / 10
-                },
-                {
-                    chainId,
-                    address: platformAccountAddr,
-                    amount: product.price * 1 / 10
+                    amount: product.price
                 }
             ],
 
