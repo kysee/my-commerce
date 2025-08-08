@@ -6,12 +6,16 @@ export type Account = {
 export type Token = {
     chainId: `0x${string}`;
     address: `0x${string}`;
+    name?: string;
+    symbol?: string;
+    decimal?: number;
 };
 
 export type Store = {
     id: string;
     name: string;
-    account?: Account;
+    accounts: Account[];
+    rate: number;
 };
 
 export type Item = {
@@ -24,15 +28,10 @@ export type Item = {
     }
 };
 
-export type PayInfo = {
-    token: Token;
-    to: (Account & { amount: string | number })[];
-}
-
-
-export type PayementRequest = {
+export type Invoice = {
+    id: String;
     stores: Store[];
     items: Item[];
-    payment: PayInfo;
+    payments: (Token & { amount: string | number })[];
     signature: Uint8Array | string;
 }

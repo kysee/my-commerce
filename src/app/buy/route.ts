@@ -1,6 +1,6 @@
 
 import { getProductStore } from "@/lib/product";
-import { PayementRequest } from '@/lib/paymentRequest';
+import { Invoice } from '@/lib/invoice';
 import { randomHexString } from '@/lib/utils';
 import { NextRequest, NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
@@ -14,19 +14,21 @@ const storeId = uuidv4();
 
 
 export async function GET(request: NextRequest) {
-    // URL 객체로 변환
     const { searchParams } = new URL(request.url);
-
-    // 쿼리 파라미터 추출
     const prodid = searchParams.get('prodid')!;
-    console.log('ur', request.url);
-    console.log('prodid', prodid);
     const product = getProductStore().getProduct(prodid)!;
-    const req: PayementRequest = {
+    const req: Invoice = {
+        id: uuidv4(),
         stores: [
             {
                 id: storeId,
-                name: product.seller
+                name: product.seller,
+                accounts: [{
+                    chainId,
+                    address: storeAccountAddr,
+                }],
+                rate: 100,
+
             }
         ],
         items: [
@@ -35,25 +37,24 @@ export async function GET(request: NextRequest) {
                 name: product.name,
                 amount: 1,
                 price: {
-                    unit: "CKRW",
+                    unit: "KRW",
                     amount: product.price
                 }
             }
         ],
-        payment: {
-            token: {
+        payments: [
+            {
                 chainId,
                 address: tokenContractAddr,
+                amount: product.price
             },
-            to: [
-                {
-                    chainId,
-                    address: storeAccountAddr,
-                    amount: product.price
-                }
-            ],
+            {
+                chainId,
+                address: tokenContractAddr,
+                amount: product.price
+            },
 
-        },
+        ],
         signature: randomHexString(65)// dummy signature
     };
     return NextResponse.json(req);
