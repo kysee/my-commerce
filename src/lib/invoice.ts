@@ -1,14 +1,8 @@
+import { Token } from "./token";
+
 export type Account = {
     chainId: `0x${string}`;
     address: `0x${string}`;
-};
-
-export type Token = {
-    chainId: `0x${string}`;
-    address: `0x${string}`;
-    name?: string;
-    symbol?: string;
-    decimal?: number;
 };
 
 export type Store = {

@@ -28,10 +28,10 @@ export default function ProductList() {
     const paged = filtered.slice((page - 1) * PRODUCTS_PER_PAGE, page * PRODUCTS_PER_PAGE);
     const isMobile = useIsMobile();
 
-    function handlePaymentRequest(product: Product) {
+    function showDeepLinkQR(product: Product) {
         selectProdId(product.id);
-        const getPayReq = encodeURIComponent(`http://localhost:3000/buy?prodid=${product.id}`);
-        const deepLink = `mywallet://payReqUrl?r=${getPayReq}`;
+        const getUrl = encodeURIComponent(`http://localhost:3000/invoice?prodid=${product.id}`);
+        const deepLink = `mywallet://invoice?r=${getUrl}`;
         console.log('deepLink', deepLink);
         if (isMobile) {
             window.location.href = deepLink;
@@ -82,7 +82,7 @@ export default function ProductList() {
                             <div className="text-xs text-muted-foreground line-clamp-1 w-full leading-snug mb-0.5">{product.description}</div>
                             <Button variant="outline"
                                 className="w-auto mt-1 mb-2 px-0.5 py-0.5 flex justify-end items-center gap-1 self-end !h-auto !min-h-0 !rounded bg-primary text-white"
-                                onClick={() => handlePaymentRequest(product)}>
+                                onClick={() => showDeepLinkQR(product)}>
                                 <span className="font-semibold text-sm">{product.price.toLocaleString()}</span>
                                 <span className="align-middle text-[10px]">CKRW</span>
                             </Button>

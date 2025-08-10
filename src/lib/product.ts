@@ -1,6 +1,6 @@
-import { SampleProducts } from "./sample-prod";
+import { SampleProducts } from "../db/sample-prod";
 
-export interface Product {
+export type Product = {
     id: string;
     name: string;
     description: string;
@@ -12,8 +12,8 @@ export interface Product {
 
 export interface ProductStore {
     products: Product[];
-    getProduct(id: string): Product | undefined;
-    getProductList(): Product[];
+    getProduct: (id: string) => Product | undefined;
+    getProductList: () => Product[];
 }
 
 const productStore = new SampleProducts();
