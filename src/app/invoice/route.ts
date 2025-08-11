@@ -4,8 +4,7 @@ import { Invoice } from '@/lib/invoice';
 import { randomHexString } from '@/lib/utils';
 import { NextRequest, NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
-import { tokens } from "@/db/tokens";
-import { exchangeTokens, Token } from "@/lib/token";
+import { TokenSet } from "@/lib/token";
 
 
 const chainId = "0xDEA8D3"; // devnet0
@@ -20,32 +19,19 @@ export async function GET(request: NextRequest) {
     const prodid = searchParams.get('prodid')!;
     const wantedChainId = searchParams.get('chainId')!;
     const wantedTokAddr = searchParams.get('tokAddr')!;
-    let wantedToken: Token | undefined;
     const product = getProductStore().getProduct(prodid)!;
 
-    for (const idx in tokens) {
-        const tok = tokens[idx];
-        for (const jdx in tok.chains) {
-            const c = tok.chains[jdx];
-            if (c.chainId.toLowerCase() === wantedChainId.toLowerCase() &&
-                c.address.toLowerCase() === wantedTokAddr.toLowerCase()) {
-                wantedToken = tok;
-                wantedToken.chains = [c];
-                break;
-            }
-        }
-        if (wantedToken) {
-            break;
-        }
-    }
+    const tokenset = TokenSet.getInstance();
+    const found = tokenset.filter(
+        tok => (!wantedChainId || (wantedChainId.toLowerCase() == tok.chainId.toLowerCase())) &&
+            (!wantedTokAddr || (wantedTokAddr.toLowerCase() == tok.address.toLowerCase()))
+    );
 
-    if (!wantedToken) {
+    if (found.length <= 0) {
         return NextResponse.json({ error: 'not found token' });
     }
 
-
-
-    const req: Invoice = {
+    const invoice: Invoice = {
         id: uuidv4(),
         stores: [
             {
@@ -70,16 +56,16 @@ export async function GET(request: NextRequest) {
                 }
             }
         ],
-        payments: [
-            {
-                ...wantedToken, amount: exchangeTokens({
-                    amount: BigInt(product.price) * 10n ** 18n,
-                    from: 'KRW',
-                    to: wantedToken.symbol!
-                })
-            },
-        ],
-        signature: randomHexString(65)// dummy signature
-    };
-    return NextResponse.json(req);
+        payments:
+            found != undefined ? found.map(tok => ({
+                ...tok, amount: tokenset.exchange(
+                    BigInt(product.price) * 10n ** 18n,
+                    { chainId: '0x', address: '0x', symbol: "KRW" },
+                    tok
+                )
+            })
+            ) : [],
+        signature: '0xAAA',
+    }
+    return NextResponse.json(invoice);
 }

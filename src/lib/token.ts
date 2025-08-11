@@ -1,34 +1,53 @@
+import { TokenSetFactory, TokenSetFactoryFromFile } from "./token-factory";
+
 export type Token = {
+    chainId: `0x${string}`;
+    address: `0x${string}`;
     name?: string;
     symbol?: string;
     decimals?: number;
-    chains: {
-        chainId: `0x${string}`;
-        address: `0x${string}`;
-    }[];
 };
 
-const rates = [
-    ['KRW', 'USDC', 1300, 1],
-    ['KRW', 'USDT', 1290, 1],
-    ['KRW', 'CKRW', 1, 1],
-    ['KRW', 'NKRW', 1, 1],
-    ['KRW', 'KKRW', 1, 1],
-    ['KRW', 'OKRW', 1, 1],
-];
+type ExRates = [[string /*token0 name*/, string /*token1 name*/, number /*token0 amt*/, number /*token1 amt*/]];
 
+export class TokenSet extends Array<Token> {
+    private static tokenSet: TokenSet;
 
-export function exchangeTokens(exinfo: { amount: number | string | bigint, from: string, to: string }): string {
-    const amt = BigInt(exinfo.amount);
-    for (var i = 0; i < rates.length; i++) {
-        const r = rates[i];
-        if (r[0] === exinfo.from && r[1] === exinfo.to) {
-            return (amt * BigInt(r[3]) / BigInt(r[2])).toString();
+    static init(factory: TokenSetFactory) {
+        TokenSet.tokenSet = factory.createTokenSet();
+    }
+    static getInstance(): TokenSet {
+        if (!TokenSet.tokenSet) {
+            throw new Error("TokenSet is not initialized");
         }
-        if (r[0] === exinfo.to && r[1] === exinfo.from) {
-            return (amt * BigInt(r[2]) / BigInt(r[3])).toString();
-        }
+        return TokenSet.tokenSet;
     }
 
-    throw new Error(`token pair (${exinfo.from} - ${exinfo.to}) is not found`);
+
+    private exRates: ExRates;
+    setExRates(r: ExRates) {
+        console.log('setExRates', r);
+        this.exRates = r;
+    }
+    exchange(amount: string | bigint, src: Token, dst: Token): string {
+        const amt = typeof amount == 'string' ? BigInt(amount) : amount;
+        for (var i = 0; i < this.exRates.length; i++) {
+            const r = this.exRates[i];
+            if (r[0] === src.symbol && r[1] === dst.symbol) {
+                return (amt * BigInt(r[3]) / BigInt(r[2])).toString();
+            }
+            if (r[0] === dst.symbol && r[1] === src.symbol) {
+                return (amt * BigInt(r[2]) / BigInt(r[3])).toString();
+            }
+        }
+
+        throw new Error(`token pair(${src.symbol} - ${dst.symbol}) is not found`);
+    }
+
+    constructor(...items: Token[]) {
+        super(...items);
+        this.exRates = [['', '', 0, 0]];
+    }
 }
+
+TokenSet.init(new TokenSetFactoryFromFile('src/res/sample-tokens.json'));

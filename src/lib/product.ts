@@ -1,4 +1,4 @@
-import { SampleProducts } from "../db/sample-prod";
+import { SampleProducts } from "../res/sample-prod";
 
 export type Product = {
     id: string;

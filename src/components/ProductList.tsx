@@ -18,7 +18,7 @@ export default function ProductList() {
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(1);
     const [dialogOpen, setDialogOpen] = React.useState(false);
-    const [selectedProdId, selectProdId] = React.useState("");
+    const [invoiceUrl, setInvoiceUrl] = React.useState("");
     const [qrValue, setQrValue] = React.useState("");
 
     const filtered = prodStore.getProductList().filter((p) =>
@@ -29,14 +29,14 @@ export default function ProductList() {
     const isMobile = useIsMobile();
 
     function showDeepLinkQR(product: Product) {
-        selectProdId(product.id);
         const getUrl = encodeURIComponent(`http://localhost:3000/invoice?prodid=${product.id}`);
         const deepLink = `mywallet://invoice?r=${getUrl}`;
-        console.log('deepLink', deepLink);
+
         if (isMobile) {
             window.location.href = deepLink;
             return;
         } else {
+            setInvoiceUrl(getUrl);
             setQrValue(deepLink);
             setDialogOpen(true);
         }
@@ -112,11 +112,11 @@ export default function ProductList() {
                         <div className="flex flex-col items-center">
                             <QRCode value={qrValue} size={256} />
                         </div>
-                        <p>ProductID: {selectedProdId}</p>
-                    </div>
+                        <p> <a href={decodeURIComponent(invoiceUrl)}>InvoiceURL</a></p>
+                    </div >
                 </div>
             )}
-        </div>
+        </div >
     );
 }
 
