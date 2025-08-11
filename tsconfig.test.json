@@ -1,0 +1,8 @@
+{
+    "extends": "./tsconfig.json", // 기존 설정 상속
+    "compilerOptions": {
+        "module": "CommonJS", // Node.js 환경에 맞게 CommonJS로 변경
+        "moduleResolution": "Node", // 모듈 해석 방식도 Node로 명시
+        "baseUrl": "." // baseUrl을 현재 디렉토리로 설정
+    }
+}

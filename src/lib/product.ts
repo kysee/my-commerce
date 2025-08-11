@@ -1,4 +1,4 @@
-import { SampleProducts } from "../res/sample-prod";
+import { ProductStoreFactory, ProductStoreFactoryFromFile } from "./product-factory";
 
 export type Product = {
     id: string;
@@ -10,13 +10,22 @@ export type Product = {
 }
 
 
-export interface ProductStore {
-    products: Product[];
-    getProduct: (id: string) => Product | undefined;
-    getProductList: () => Product[];
+export class ProductStore extends Array<Product> {
+    private static prods: ProductStore;
+
+    constructor(...items: Product[]) {
+        super(...items);
+    }
+
+    static init(factory: ProductStoreFactory) {
+        ProductStore.prods = factory.createProductStore();
+    }
+    static getInstance(): ProductStore {
+        if (!ProductStore.prods) {
+            throw new Error("ProductStore is not initialized");
+        }
+        return ProductStore.prods;
+    }
 }
 
-const productStore = new SampleProducts();
-export function getProductStore(): ProductStore {
-    return productStore;
-}
+ProductStore.init(new ProductStoreFactoryFromFile('src/res/sample-products.json'));

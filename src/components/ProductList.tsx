@@ -5,23 +5,25 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import * as React from "react";
-import { Product, getProductStore } from "@/lib/product";
+import { Product, ProductStore } from "@/lib/product";
+import QRCode from "react-qr-code";
 
 const PRODUCTS_PER_ROW = 3;
 const MAX_ROWS = 3;
 const PRODUCTS_PER_PAGE = PRODUCTS_PER_ROW * MAX_ROWS;
 
-import QRCode from "react-qr-code";
-
-export default function ProductList() {
-    const prodStore = getProductStore();
+interface ProductListProps {
+    products: Product[];
+}
+export default function ProductList(props: ProductListProps) {
+    const prodStore = props.products;
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(1);
     const [dialogOpen, setDialogOpen] = React.useState(false);
     const [invoiceUrl, setInvoiceUrl] = React.useState("");
     const [qrValue, setQrValue] = React.useState("");
 
-    const filtered = prodStore.getProductList().filter((p) =>
+    const filtered = prodStore.filter((p) =>
         p.name.includes(search) || p.description.includes(search) || p.seller.includes(search)
     );
     const totalPages = Math.ceil(filtered.length / PRODUCTS_PER_PAGE);

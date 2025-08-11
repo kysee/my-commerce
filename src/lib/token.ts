@@ -26,7 +26,6 @@ export class TokenSet extends Array<Token> {
 
     private exRates: ExRates;
     setExRates(r: ExRates) {
-        console.log('setExRates', r);
         this.exRates = r;
     }
     exchange(amount: string | bigint, src: Token, dst: Token): string {
@@ -49,5 +48,6 @@ export class TokenSet extends Array<Token> {
         this.exRates = [['', '', 0, 0]];
     }
 }
+
 
 TokenSet.init(new TokenSetFactoryFromFile('src/res/sample-tokens.json'));

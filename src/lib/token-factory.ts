@@ -7,9 +7,10 @@ export interface TokenSetFactory {
 }
 
 export class TokenSetFactoryFromFile implements TokenSetFactory {
-    constructor(private srcTok: string) { }
+    constructor(private srcPath: string) { }
     createTokenSet(): TokenSet {
-        const fileContents = readFileSync(this.srcTok, 'utf-8');
+        console.log('TokenSetFactoryFromFile.srcPath', this.srcPath);
+        const fileContents = readFileSync(this.srcPath, 'utf-8');
         const res = JSON.parse(fileContents);
         const ret = new TokenSet(...res.tokens);
         ret.setExRates(res.exRates);

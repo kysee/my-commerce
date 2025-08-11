@@ -1,10 +1,12 @@
+import { TokenSet } from '@/lib/token';
 
 
-console.log('100 KRW', 'CKRW', exchangeTokens({ amount: 1000, from: 'KRW', to: 'CKRW' }));
-console.log('100 KRW', 'NKRW', exchangeTokens({ amount: 1000, from: 'KRW', to: 'NKRW' }));
-console.log('100 KRW', 'KKRW', exchangeTokens({ amount: 1000, from: 'KRW', to: 'KKRW' }));
-console.log('100 KRW', 'USDC', exchangeTokens({ amount: 1000, from: 'KRW', to: 'USDC' }));
-console.log('100 KRW', 'USDC', exchangeTokens({ amount: 1300, from: 'KRW', to: 'USDC' }));
-console.log('100 KRW', 'USDT', exchangeTokens({ amount: 1000, from: 'KRW', to: 'USDT' }));
-console.log('1 USDC', 'KRW', exchangeTokens({ amount: 2.54e18, from: 'USDC', to: 'KRW' }));
+const tokenSet = TokenSet.getInstance();
+const amt = tokenSet.exchange(
+    "2300000000000000000000",
+    { chainId: '0x', address: '0x', symbol: 'KRW' },
+    { chainId: '0x', address: '0x', symbol: 'USDC' }
+);
+console.log("amount", `${amt.substring(0, amt.length - 18)}.${amt.substring(amt.length - 18)}`);
+
 

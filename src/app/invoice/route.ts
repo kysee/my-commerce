@@ -1,16 +1,15 @@
 
-import { getProductStore } from "@/lib/product";
 import { Invoice } from '@/lib/invoice';
-import { randomHexString } from '@/lib/utils';
 import { NextRequest, NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
 import { TokenSet } from "@/lib/token";
+import { ProductStore } from "@/lib/product";
+
 
 
 const chainId = "0xDEA8D3"; // devnet0
 // const platformAccountAddr = "0x092AA1CB78F490A2E424C7B2E12A6D6C62F401E1";
 const storeAccountAddr = "0x89C12C4E4947AFEC2F27495F47DAC691A18CAEE4";
-const tokenContractAddr = "0x3aa757aa5749be7d3cb1c0d7c59e6ef70de4ff8b";
 const storeId = uuidv4();
 
 
@@ -19,7 +18,8 @@ export async function GET(request: NextRequest) {
     const prodid = searchParams.get('prodid')!;
     const wantedChainId = searchParams.get('chainId')!;
     const wantedTokAddr = searchParams.get('tokAddr')!;
-    const product = getProductStore().getProduct(prodid)!;
+    const prodstore = ProductStore.getInstance();
+    const product = prodstore.find(prod => prod.id == prodid)!;
 
     const tokenset = TokenSet.getInstance();
     const found = tokenset.filter(
