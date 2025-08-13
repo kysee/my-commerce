@@ -31,7 +31,10 @@ export default function ProductList(props: ProductListProps) {
     const isMobile = useIsMobile();
 
     function showDeepLinkQR(product: Product) {
-        const getUrl = encodeURIComponent(`http://localhost:3000/invoice?prodid=${product.id}`);
+        const protocol = window.location.protocol;
+        const host = window.location.hostname;
+        const port = window.location.port;
+        const getUrl = encodeURIComponent(`${protocol}//${host}:${port}/invoice?prodid=${product.id}`);
         const deepLink = `mywallet://invoice?r=${getUrl}`;
 
         if (isMobile) {
