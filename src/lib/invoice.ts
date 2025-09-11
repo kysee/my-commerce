@@ -9,7 +9,7 @@ export type Store = {
     id: string;
     name: string;
     accounts: Account[];
-    rate: number;
+    rate: string;
 };
 
 export type Item = {
@@ -26,6 +26,6 @@ export type Invoice = {
     id: String;
     stores: Store[];
     items: Item[];
-    payments: (Token & { amount: string | number })[];
+    payments?: (Token & { amount: string | number })[];
     signature: Uint8Array | string;
 }
