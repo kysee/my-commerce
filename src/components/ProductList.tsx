@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import * as React from "react";
-import { Product, ProductStore } from "@/lib/product";
+import { Product } from "@/lib/product";
 import QRCode from "react-qr-code";
 
 const PRODUCTS_PER_ROW = 3;

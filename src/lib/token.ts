@@ -30,7 +30,7 @@ export class TokenSet extends Array<Token> {
     }
     exchange(amount: string | bigint, src: Token, dst: Token): string {
         const amt = typeof amount == 'string' ? BigInt(amount) : amount;
-        for (var i = 0; i < this.exRates.length; i++) {
+        for (let i = 0; i < this.exRates.length; i++) {
             const r = this.exRates[i];
             if (r[0] === src.symbol && r[1] === dst.symbol) {
                 return (amt * BigInt(r[3]) / BigInt(r[2])).toString();

@@ -23,7 +23,7 @@ export type Item = {
 };
 
 export type Invoice = {
-    id: String;
+    id: string;
     stores: Store[];
     items: Item[];
     payments?: (Token & { amount: string | number })[];
