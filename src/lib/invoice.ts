@@ -9,7 +9,7 @@ export type Store = {
     id: string;
     name: string;
     accounts: Account[];
-    rate: string;
+    rate: number;
 };
 
 export type Item = {
